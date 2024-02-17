@@ -45,6 +45,11 @@ export default async function authController(req, res) {
         maxAge: 24 * 60 * 60 * 1000,
       });
 
+      await db.query("update users set refreshtoken = $1 where username = $2", [
+        refreshToken,
+        username,
+      ]);
+
       res.json({ username: user.username, accessToken });
     } else {
       return res.sendStatus(401); //unauthorized
