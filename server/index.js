@@ -3,7 +3,9 @@ dotenv.config();
 import express from "express";
 import cookieParser from "cookie-parser";
 
-import authRoutes from "./routes/authRoutes.js";
+import authRouter from "./routes/authRoutes.js";
+import userPostRouter from "./routes/userPostsRoute.js";
+import verifyJwt from "./middlewares/verifyJwt.js";
 
 const app = express();
 
@@ -12,9 +14,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 //Public routes
-app.use("/api/v1/auth/", authRoutes);
+app.use("/api/v1/auth/", authRouter);
 
 //Secured Routes
+app.use("/api/v1/userposts/", verifyJwt, userPostRouter);
 
 app.listen(process.env.SERVER_PORT || 3000, () => {
   console.log(

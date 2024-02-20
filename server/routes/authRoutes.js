@@ -5,12 +5,12 @@ import verifyController from "../controllers/Auth/verifyController.js";
 import refreshController from "../controllers/Auth/refreshController.js";
 import logoutController from "../controllers/Auth/logoutController.js";
 
-const router = Router();
+const authRouter = Router();
 
-router.post("/login", authController);
-router.post("/register", registerController);
-router.get("/verify/:token", verifyController);
-router.get("/refresh", refreshController);
-router.get("/logout", logoutController);
+authRouter.post("/login", authController);
+authRouter.post("/register", registerController);
+authRouter.get("/verify/:token", verifyController);
+authRouter.get("/refresh", refreshController);
+authRouter.get("/logout", logoutController);
 
-export default router;
+export default authRouter;
