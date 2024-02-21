@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import * as db from "../../models/db.js";
 import jwt from "jsonwebtoken";
+import { settings } from "../../config/settings.js";
 
 export default async function refreshController(req, res) {
   try {
@@ -24,7 +25,7 @@ export default async function refreshController(req, res) {
           { username: user.username },
           process.env.ACCESS_TOKEN_SECRET,
           {
-            expiresIn: "2m",
+            expiresIn: settings.accessTokenExpiry,
           }
         );
         res.json({ username: user.username, accessToken: newAccessToken });

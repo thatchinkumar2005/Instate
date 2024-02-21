@@ -1,6 +1,8 @@
 import * as db from "../../models/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { settings } from "../../config/settings.js";
+import ms from "ms";
 
 export default async function authController(req, res) {
   try {
@@ -20,7 +22,7 @@ export default async function authController(req, res) {
       return res.sendStatus(404); //username not found
     }
 
-    if (!user.verified) {
+    if (settings.requireVerification && !user.verified) {
       return res.sendStatus(412); //precondition required
     }
 
@@ -30,19 +32,19 @@ export default async function authController(req, res) {
       const accessToken = jwt.sign(
         { username: user.username },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "2m" }
+        { expiresIn: settings.accessTokenExpiry }
       );
       const refreshToken = jwt.sign(
         { username: user.username },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: settings.refreshTokenExpiry }
       );
 
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: ms(settings.refreshTokenExpiry),
       });
 
       await db.query("update users set refreshtoken = $1 where username = $2", [

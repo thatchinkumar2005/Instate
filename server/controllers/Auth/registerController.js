@@ -1,3 +1,4 @@
+import { settings } from "../../config/settings.js";
 import { sendVerificationMail } from "../../helpers/sendMail.js";
 import * as db from "../../models/db.js";
 import bcrypt from "bcrypt";
@@ -24,9 +25,11 @@ export default async function registerController(req, res) {
       [username, hash, email, fname, lname || "", dob, bio || ""]
     );
 
-    const emailResp = await sendVerificationMail(username, email);
+    if (settings.requireVerification) {
+      const emailResp = await sendVerificationMail(username, email);
 
-    console.log(emailResp);
+      console.log(emailResp);
+    }
 
     res.json(resp.rows[0]);
   } catch (error) {
