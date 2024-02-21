@@ -12,6 +12,7 @@ export async function updatePostController(req, res) {
     if (!user) return res.sendStatus(401);
     const files = req.files;
     const { caption, id } = req.body;
+    if (!id) return res.sendStatus(400);
     const imagesNames = files.map((image) => image.filename);
     let resp = await db.query(
       "select username, images from posts where id = $1",

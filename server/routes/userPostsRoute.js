@@ -5,6 +5,8 @@ import addNewPostController from "../controllers/Posts/addNewPostController.js";
 import { fileURLToPath } from "url";
 import path from "path";
 import { updatePostController } from "../controllers/Posts/updatePostController.js";
+import deletePostController from "../controllers/Posts/deletePostController.js";
+import likeController from "../controllers/Posts/likeController.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,5 +35,6 @@ userPostRouter.put(
   uploadPosts.array("PostImages", 10),
   updatePostController
 );
-
+userPostRouter.delete("/", deletePostController);
+userPostRouter.get("/like", likeController);
 export default userPostRouter;

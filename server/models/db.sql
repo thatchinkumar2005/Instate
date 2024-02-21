@@ -23,3 +23,5 @@ create table posts(
     liked text [],
     username text references users(username)
 )
+
+alter table 
