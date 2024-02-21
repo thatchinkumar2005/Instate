@@ -1,6 +1,7 @@
 import { Router } from "express";
 import getAllUserPosts from "../controllers/Posts/getAllUserPosts.js";
 import multer from "multer";
+import { v4 as uuid } from "uuid";
 import addNewPostController from "../controllers/Posts/addNewPostController.js";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -16,7 +17,7 @@ const storage = multer.diskStorage({
     done(null, path.join(__dirname, "../storage/PostImages"));
   },
   filename: (req, file, done) => {
-    done(null, file.fieldname + Date.now() + path.extname(file.originalname));
+    done(null, file.fieldname + uuid() + path.extname(file.originalname));
   },
 });
 

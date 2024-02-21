@@ -12,15 +12,17 @@ export default async function likeController(req, res) {
     let liked = resp.rows[0].liked;
     if (liked.includes(user.username)) {
       liked.splice(liked.indexOf(user.username), 1);
-      resp = await db.query("update posts set liked = $1 returning liked", [
-        liked,
-      ]);
+      resp = await db.query(
+        "update posts set liked = $1 where id = $2 returning liked",
+        [liked, id]
+      );
       return res.json(resp.rows[0].liked);
     }
     liked.push(user.username);
-    resp = await db.query("update posts set liked = $1 returning liked", [
-      liked,
-    ]);
+    resp = await db.query(
+      "update posts set liked = $1 where id = $2 returning liked",
+      [liked, id]
+    );
     res.json(resp.rows[0].liked);
   } catch (error) {
     res.status(500).json({ message: error.message });
