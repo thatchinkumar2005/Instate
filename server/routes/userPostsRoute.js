@@ -1,5 +1,5 @@
 import { Router } from "express";
-import getAllUserPosts from "../controllers/Posts/getAllUserPosts.js";
+import getAuthUserPosts from "../controllers/Posts/getAuthUserPosts.js";
 import multer from "multer";
 import { v4 as uuid } from "uuid";
 import addNewPostController from "../controllers/Posts/addNewPostController.js";
@@ -8,6 +8,8 @@ import path from "path";
 import { updatePostController } from "../controllers/Posts/updatePostController.js";
 import deletePostController from "../controllers/Posts/deletePostController.js";
 import likeController from "../controllers/Posts/likeController.js";
+import getUserPosts from "../controllers/Posts/getUserPosts.js";
+import verifyJwt from "../middlewares/verifyJwt.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,17 +27,20 @@ const uploadPosts = multer({ storage });
 
 const userPostRouter = Router();
 
-userPostRouter.get("/", getAllUserPosts);
+userPostRouter.get("/", verifyJwt, getAuthUserPosts);
+userPostRouter.get("/:username", getUserPosts);
 userPostRouter.post(
   "/",
+  verifyJwt,
   uploadPosts.array("PostImages", 10),
   addNewPostController
 );
 userPostRouter.put(
   "/",
+  verifyJwt,
   uploadPosts.array("PostImages", 10),
   updatePostController
 );
-userPostRouter.delete("/", deletePostController);
-userPostRouter.get("/like", likeController);
+userPostRouter.delete("/", verifyJwt, deletePostController);
+userPostRouter.get("/like", verifyJwt, likeController);
 export default userPostRouter;

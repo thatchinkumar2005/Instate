@@ -21,8 +21,8 @@ app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/feed/", acknowledgeJwt, feedRouter);
 
 //Secured Routes
-app.use("/api/v1/userposts/", verifyJwt, userPostRouter);
-app.use("/api/v1/users/", verifyJwt, userRouter);
+app.use("/api/v1/userposts/", userPostRouter); //middlewares in route file
+app.use("/api/v1/users/", userRouter); //middlewares in route file
 
 app.listen(process.env.SERVER_PORT || 3000, () => {
   console.log(

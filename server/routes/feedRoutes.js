@@ -5,6 +5,6 @@ import getPostController from "../controllers/Feed/getPostController.js";
 const feedRouter = Router();
 
 feedRouter.get("/", feedController);
-feedRouter.get("/post", getPostController);
+feedRouter.get("/post/:id", getPostController);
 
 export { feedRouter };
