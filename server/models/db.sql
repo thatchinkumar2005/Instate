@@ -24,4 +24,14 @@ create table posts(
     username text references users(username)
 )
 
-alter table 
+
+
+
+select * from (select * from posts order by 
+    case 
+        when username = any(array['nithin', 'thatchin']) then 0 
+        else 1
+    end,
+    coalesce(array_length(liked, 1), 0) desc) as feed
+limit 3; --query for the feed...
+

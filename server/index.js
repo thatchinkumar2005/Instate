@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoutes.js";
 import userPostRouter from "./routes/userPostsRoute.js";
 import verifyJwt from "./middlewares/verifyJwt.js";
+import acknowledgeJwt from "./middlewares/acknowledgeJwt.js";
 import { userRouter } from "./routes/userRoutes.js";
 import { feedRouter } from "./routes/feedRoutes.js";
 
@@ -17,7 +18,8 @@ app.use(cookieParser());
 
 //Public routes
 app.use("/api/v1/auth/", authRouter);
-app.use("/api/v1/feed", feedRouter);
+app.use("/api/v1/feed/", acknowledgeJwt, feedRouter);
+
 //Secured Routes
 app.use("/api/v1/userposts/", verifyJwt, userPostRouter);
 app.use("/api/v1/users/", verifyJwt, userRouter);
