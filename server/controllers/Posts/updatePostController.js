@@ -10,27 +10,41 @@ export async function updatePostController(req, res) {
   try {
     const user = req?.user;
     if (!user) return res.sendStatus(401);
+
     const files = req.files;
+    const imagesNames = files.map((image) => image.filename);
     const { caption, id } = req.body;
     if (!id) return res.sendStatus(400);
-    const imagesNames = files.map((image) => image.filename);
+
     let resp = await db.query(
-      "select username, images from posts where id = $1",
+      "select username, images, caption from posts where id = $1",
       [id]
     );
-    const prevPost = resp.rows[0];
-    if (prevPost.username !== user.username) return res.sendStatus(401);
 
-    prevPost.images.forEach(async (image) => {
-      const imagePath = path.join(__dirname, "../../storage/PostImages", image);
-      await fs.unlink(imagePath, () => {
-        console.log("deleted");
+    const { username, images: oldImages, caption: oldCaption } = resp.rows[0];
+
+    if (username !== user.username) return res.sendStatus(401);
+
+    if (imagesNames.length > 0 && oldImages.length > 0) {
+      oldImages.forEach(async (image) => {
+        const imagePath = path.join(
+          __dirname,
+          "../../storage/PostImages",
+          image
+        );
+        await fs.unlink(imagePath, () => {
+          console.log("deleted " + image);
+        });
       });
-    });
+    }
 
     resp = await db.query(
       "update posts set caption = $1, images = $2 where id = $3 returning *",
-      [caption, imagesNames, id]
+      [
+        caption || oldCaption,
+        imagesNames.length > 0 ? imagesNames : oldImages,
+        id,
+      ]
     );
     res.json(resp.rows[0]);
   } catch (error) {

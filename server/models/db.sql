@@ -24,6 +24,9 @@ create table posts(
     username text references users(username)
 )
 
+alter table posts 
+add profilepicture text;
+
 
 
 

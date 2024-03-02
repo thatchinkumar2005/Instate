@@ -6,7 +6,7 @@ export default async function getUserInfo(req, res) {
     const user = req.user;
 
     const resp = await db.query(
-      "select fname, lname, username, email, bio, dob, follows, followers from users where username = $1",
+      "select fname, lname, username, email, bio, dob, follows, followers, profilepicture from users where username = $1",
       [username]
     );
 
