@@ -15,16 +15,26 @@ import acknowledgeJwt from "../middlewares/acknowledgeJwt.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const storage = multer.diskStorage({
-  destination: (req, file, done) => {
-    done(null, path.join(__dirname, "../storage/PostImages"));
-  },
-  filename: (req, file, done) => {
-    done(null, file.fieldname + uuid() + path.extname(file.originalname));
+// const storage = multer.diskStorage({
+//   destination: (req, file, done) => {
+//     done(null, path.join(__dirname, "../storage/PostImages"));
+//   },
+//   filename: (req, file, done) => {
+//     done(null, file.fieldname + uuid() + path.extname(file.originalname));
+//   },
+// });
+const storage = multer.memoryStorage();
+
+const uploadPosts = multer({
+  storage,
+  fileFilter: (req, file, done) => {
+    if (file.mimetype.split("/")[0] === "image") {
+      done(null, true);
+    } else {
+      done(new Error("Only Images"));
+    }
   },
 });
-
-const uploadPosts = multer({ storage });
 
 const userPostRouter = Router();
 
