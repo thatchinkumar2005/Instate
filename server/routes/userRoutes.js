@@ -13,17 +13,6 @@ import updateUserProfileController from "../controllers/users/updateUserProfile.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, done) => {
-//     done(null, path.join(__dirname, "../storage/ProfileImages"));
-//   },
-
-//   filename: (req, file, done) => {
-//     const fileName = file.fieldname + uuid() + path.extname(file.originalname);
-//     done(null, fileName);
-//   },
-// });
-
 const storage = multer.memoryStorage();
 
 const uploadProfilePic = multer({
