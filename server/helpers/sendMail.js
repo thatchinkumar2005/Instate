@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
-import jwt from "jsonwebtoken";
+import { jwtDecode } from "jwt-decode";
 
 const config = {
   service: "gmail",
@@ -22,13 +22,10 @@ let Mailgenerator = new Mailgen({
 
 let transporter = nodemailer.createTransport(config);
 
-export async function sendVerificationMail(username, to) {
-  let token = jwt.sign({ username }, process.env.MAIL_TOKEN_SECRET, {
-    expiresIn: "1h",
-  });
+export async function sendVerificationMail(token, to) {
   let mail = Mailgenerator.generate({
     body: {
-      name: username,
+      name: jwtDecode(token)?.username,
       intro: "Verify Your Instate Account",
       action: {
         instructions: "click the button below to verify your account : ",
@@ -46,6 +43,35 @@ export async function sendVerificationMail(username, to) {
       from: process.env.MAIL,
       to,
       subject: "Verify Your Instate Account",
+      html: mail,
+    });
+    return resp;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function sendResetPasswordMail(token, to) {
+  let mail = Mailgenerator.generate({
+    body: {
+      name: jwtDecode(token)?.username,
+      intro: "Reset your Instate account password",
+      action: {
+        instructions: "click the button below to reset the password : ",
+        button: {
+          color: "#C4DFDF",
+          text: "Reset",
+          link: `http://localhost:3000/api/v1/users/resetPswd/${token}`,
+        },
+      },
+    },
+  });
+
+  try {
+    const resp = await transporter.sendMail({
+      from: process.env.MAIL,
+      to,
+      subject: "Reset your Password",
       html: mail,
     });
     return resp;

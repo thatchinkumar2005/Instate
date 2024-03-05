@@ -29,9 +29,9 @@ const uploadProfilePic = multer({
 const userRouter = Router();
 
 userRouter.get("/:username", acknowledgeJwt, getUserInfo);
-userRouter.get("/", verifyJwt, getAuthUser);
+userRouter.get("/", acknowledgeJwt, getAuthUser);
 
-userRouter.post(
+userRouter.put(
   "/",
   verifyJwt,
   uploadProfilePic.single("ProfilePic"),

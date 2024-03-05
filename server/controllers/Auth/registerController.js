@@ -26,7 +26,10 @@ export default async function registerController(req, res) {
     );
 
     if (settings.requireVerification) {
-      const emailResp = await sendVerificationMail(username, email);
+      let token = jwt.sign({ username }, process.env.MAIL_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
+      const emailResp = await sendVerificationMail(token, email);
 
       console.log(emailResp);
     }
