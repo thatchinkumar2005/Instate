@@ -6,15 +6,16 @@ import ms from "ms";
 
 export default async function authController(req, res) {
   try {
-    const { username, pswd } = req.body;
+    const { username_email, pswd } = req.body;
 
-    if (!username || !pswd) {
+    if (!username_email || !pswd) {
       return res.sendStatus(400); //bad request
     }
 
-    let resp = await db.query("select * from users where username = $1", [
-      username,
-    ]);
+    let resp = await db.query(
+      "select * from users where username = $1 or email = $1",
+      [username_email]
+    );
 
     const user = resp.rows[0];
 
@@ -49,7 +50,7 @@ export default async function authController(req, res) {
 
       await db.query("update users set refreshtoken = $1 where username = $2", [
         refreshToken,
-        username,
+        user.username,
       ]);
 
       res.json({ username: user.username, accessToken });
@@ -57,6 +58,7 @@ export default async function authController(req, res) {
       return res.sendStatus(401); //unauthorized
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message }); //server error
   }
 }

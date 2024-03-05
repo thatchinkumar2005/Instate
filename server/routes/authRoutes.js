@@ -1,5 +1,4 @@
 import { Router } from "express";
-import verifyJwt from "../middlewares/verifyJwt.js";
 import authController from "../controllers/Auth/authController.js";
 import registerController from "../controllers/Auth/registerController.js";
 import verifyController from "../controllers/Auth/verifyController.js";
@@ -14,6 +13,6 @@ authRouter.post("/register", registerController);
 authRouter.get("/verify/:token", verifyController);
 authRouter.get("/refresh", refreshController);
 authRouter.get("/logout", logoutController);
-authRouter.post("/forgotPassword", verifyJwt, forgotPasswordController);
+authRouter.post("/forgotPassword", forgotPasswordController);
 
 export default authRouter;

@@ -5,24 +5,24 @@ import jwt from "jsonwebtoken";
 import { sendResetPasswordMail } from "../../helpers/sendMail.js";
 export default async function forgotPasswordController(req, res) {
   try {
-    const user = req.user;
-    if (!user) return res.sendStatus(401);
-    console.log(user);
-
+    const { email_username } = req.body;
     let resp = await db.query(
-      "select email, pswd from users where username = $1",
-      [user.username]
+      "select username, email, pswd from users where username = $1 or email = $1",
+      [email_username]
     );
 
-    const { email, pswd } = resp.rows[0];
+    const user = resp.rows[0];
+    if (!user) {
+      return res.sendStatus(404);
+    }
 
     const token = jwt.sign(
       { username: user.username },
-      process.env.RESET_TOKEN_SECRET + pswd,
+      process.env.RESET_TOKEN_SECRET + user.pswd,
       { expiresIn: "1h" }
     );
 
-    const mailResp = await sendResetPasswordMail(token, email);
+    const mailResp = await sendResetPasswordMail(token, user.email);
     console.log(mailResp);
     res.json(mailResp.envelope);
   } catch (error) {
