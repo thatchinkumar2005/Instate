@@ -5,6 +5,7 @@ import verifyController from "../controllers/Auth/verifyController.js";
 import refreshController from "../controllers/Auth/refreshController.js";
 import logoutController from "../controllers/Auth/logoutController.js";
 import forgotPasswordController from "../controllers/Auth/forgotPassword.js";
+import resetPasswordController from "../controllers/Auth/resetPasswordController.js";
 
 const authRouter = Router();
 
@@ -14,5 +15,6 @@ authRouter.get("/verify/:token", verifyController);
 authRouter.get("/refresh", refreshController);
 authRouter.get("/logout", logoutController);
 authRouter.post("/forgotPassword", forgotPasswordController);
+authRouter.post("/resetPassword/:token", resetPasswordController);
 
 export default authRouter;

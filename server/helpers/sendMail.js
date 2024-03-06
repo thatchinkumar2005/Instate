@@ -74,7 +74,11 @@ export async function sendResetPasswordMail(token, to) {
       subject: "Reset your Password",
       html: mail,
     });
-    console.log(`http://localhost:3000/api/v1/users/resetPswd/${token}`);
+    console.log(
+      `http://localhost:3000/api/v1/users/resetPswd/${
+        jwtDecode(token).username
+      }/${token}`
+    );
     return resp;
   } catch (error) {
     throw new Error(error.message);
